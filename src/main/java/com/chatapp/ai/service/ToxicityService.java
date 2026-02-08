@@ -10,6 +10,9 @@ public class ToxicityService {
             List.of("hate", "kill", "stupid", "idiot");
 
     public boolean isToxic(String message) {
+        if (message == null || message.isEmpty()) {
+            return false;
+        }
         return BAD_WORDS.stream()
                 .anyMatch(word -> message.toLowerCase().contains(word));
     }

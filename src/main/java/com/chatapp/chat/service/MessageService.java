@@ -1,5 +1,6 @@
 package com.chatapp.chat.service;
 
+import com.chatapp.ai.service.ToxicityService;
 import com.chatapp.chat.Message;
 import com.chatapp.chat.MessageRepository;
 import org.springframework.stereotype.Service;
@@ -10,20 +11,16 @@ import java.util.List;
 public class MessageService {
 
     private final MessageRepository repo;
+    private final ToxicityService toxicityService;
 
-    public MessageService(MessageRepository repo) {
+    public MessageService(MessageRepository repo, ToxicityService toxicityService) {
         this.repo = repo;
-    }
-
-    // AI Toxicity Detection (basic – assignment acceptable)
-    private boolean isToxic(String text) {
-        String t = text.toLowerCase();
-        return t.contains("hate") || t.contains("kill") || t.contains("abuse");
+        this.toxicityService = toxicityService;
     }
 
     public Message sendMessage(Message message) {
         message.setDelivered(true);
-        message.setToxic(isToxic(message.getContent()));
+        message.setToxic(toxicityService.isToxic(message.getContent()));
         return repo.save(message);
     }
 
@@ -32,7 +29,8 @@ public class MessageService {
     }
 
     public Message markRead(Long id) {
-        Message msg = repo.findById(id).orElseThrow();
+        Message msg = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Message not found"));
         msg.setRead(true);
         return repo.save(msg);
     }

@@ -1,33 +1,33 @@
-package com.chatapp.chat;
+package com.chatapp.api.dto;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "message")
-public class Message {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class MessageDTO {
     private Long id;
-
     private Long senderId;
     private Long receiverId;
-
     private String content;
-
     private boolean delivered;
     private boolean read;
     private boolean toxic;
-
-    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    // Constructors
+    public MessageDTO() {}
+
+    public MessageDTO(Long id, Long senderId, Long receiverId, String content,
+                     boolean delivered, boolean read, boolean toxic, LocalDateTime createdAt) {
+        this.id = id;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.content = content;
+        this.delivered = delivered;
+        this.read = read;
+        this.toxic = toxic;
+        this.createdAt = createdAt;
     }
 
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -52,3 +52,4 @@ public class Message {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
+
